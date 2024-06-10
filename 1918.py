@@ -1,8 +1,20 @@
 #!/usr/bin/env python3
-# Generate a random RFC1918 address
-# GPL-2.0
-# Authors: kellertk <tom@tompkel.net>
-#          pdoroff <phil21@phil21.net>
+# Generate a random RFC1918 /24 subnet
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 import random
 import ipaddress
 
@@ -25,18 +37,18 @@ def rndip(start, end):
     """Generate a random number within a specified range."""
     return random.randint(start, end)
 
-# Iterate over each prefix
-for prefix in prefix_list:
-    network = ipaddress.ip_network(prefix)
-    start_ip = ip2n(network.network_address)
-    end_ip = ip2n(network.broadcast_address)
-    
-    # Calculate the range for /24 subnets
-    start_subnet = start_ip >> 8
-    end_subnet = end_ip >> 8
-    
-    # Generate a random /24 subnet within the range
-    random_subnet_base = rndip(start_subnet, end_subnet) << 8
-    random_subnet = ipaddress.ip_network(f"{n2ip(random_subnet_base)}/24")
-    
-    print(random_subnet)
+# Select a random prefix
+random_prefix = random.choice(prefix_list)
+network = ipaddress.ip_network(random_prefix)
+start_ip = ip2n(network.network_address)
+end_ip = ip2n(network.broadcast_address)
+
+# Calculate the range for /24 subnets
+start_subnet = start_ip >> 8
+end_subnet = end_ip >> 8
+
+# Generate a random /24 subnet within the range
+random_subnet_base = rndip(start_subnet, end_subnet) << 8
+random_subnet = ipaddress.ip_network(f"{n2ip(random_subnet_base)}/24")
+
+print(random_subnet)
